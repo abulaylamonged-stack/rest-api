@@ -1,10 +1,11 @@
 package rest_api.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import rest_api.model.Schedule;
 import rest_api.repository.ScheduleRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,8 +17,8 @@ public class ScheduleService {
         this.repository = repository;
     }
 
-    public List<Schedule> getAllSchedules() {
-        return repository.findAll();
+    public Page<Schedule> getAllSchedules(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     public Optional<Schedule> getScheduleById(Long id) {

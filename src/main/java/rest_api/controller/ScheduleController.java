@@ -1,6 +1,9 @@
 package rest_api.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,8 +18,6 @@ import rest_api.model.ApiResponse;
 import rest_api.model.Schedule;
 import rest_api.service.ScheduleService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/schedules")
 @CrossOrigin(origins = "*")
@@ -29,9 +30,10 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Schedule>>> getAllSchedules() {
+        public ResponseEntity<ApiResponse<Page<Schedule>>> getAllSchedules(
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
         return ResponseEntity.ok(new ApiResponse<>(
-                true, "Schedules retrieved successfully", service.getAllSchedules()));
+                true, "Schedules retrieved successfully", service.getAllSchedules(pageable)));
     }
 
     @GetMapping("/{id}")

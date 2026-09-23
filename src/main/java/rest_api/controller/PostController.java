@@ -1,13 +1,15 @@
 package rest_api.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rest_api.model.ApiResponse;
 import rest_api.model.Post;
 import rest_api.service.PostService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -21,8 +23,11 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Post>>> getAllPosts() {
-        return ResponseEntity.ok(new ApiResponse<>(true, "Posts retrieved successfully", service.getAllPosts()));
+    public ResponseEntity<ApiResponse<Page<Post>>> getAllPosts(
+            @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                true, "Posts retrieved successfully", service.getAllPosts(pageable)));
     }
 
     @GetMapping("/{id}")

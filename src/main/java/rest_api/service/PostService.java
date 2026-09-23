@@ -1,10 +1,11 @@
 package rest_api.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import rest_api.model.Post;
 import rest_api.repository.PostRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,8 +17,8 @@ public class PostService {
         this.repository = repository;
     }
 
-    public List<Post> getAllPosts() {
-        return repository.findAll();
+    public Page<Post> getAllPosts(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     public Optional<Post> getPostById(Long id) {
