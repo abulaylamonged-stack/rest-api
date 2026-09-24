@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest_api.model.ApiResponse;
 import rest_api.model.Post;
@@ -23,6 +24,7 @@ public class PostController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Page<Post>>> getAllPosts(
             @PageableDefault(page = 0, size = 5, sort = "title", direction = Sort.Direction.ASC)
             Pageable pageable) {
@@ -31,6 +33,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Post>> getPost(@PathVariable Long id) {
         return service.getPostById(id)
                 .map(post -> ResponseEntity.ok(
@@ -39,11 +42,13 @@ public class PostController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Post>> createPost(@Valid @RequestBody Post post) {
         return ResponseEntity.ok(new ApiResponse<>(true, "Post created successfully", service.createPost(post)));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Post>> updatePost(
             @PathVariable Long id,
             @Valid @RequestBody Post post) {
@@ -55,6 +60,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         if (service.deletePost(id)) {
             return ResponseEntity.noContent().build();
